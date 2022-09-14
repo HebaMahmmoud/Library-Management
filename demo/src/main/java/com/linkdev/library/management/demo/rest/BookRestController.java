@@ -35,23 +35,27 @@ public class BookRestController {
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(theBook_.getId())
 				.toUri();
 
-
 		return ResponseEntity.created(location).build();
 
 	}
 
-	@PutMapping("/update")
-	public ResponseEntity<Void> updateEmployee(@RequestBody Book theBook) {
+	@PutMapping("/update/{bookId}")
+	public ResponseEntity<Void> updateEmployee(@PathVariable(value = "bookId") Integer bookId, @RequestBody Book theBook) {
 
-		Book theBook_ = null;
-		theBook_ = bookesrvice.save(theBook);
-		if (theBook_ == null)
+		Book tempBook = bookesrvice.findById(bookId);
+
+		if (tempBook == null) {
+			throw new RuntimeException("Book id not found - " + bookId);
+		}
+
+		theBook.setId(tempBook.getId());
+
+		theBook = bookesrvice.save(theBook);
+		if (theBook == null)
 			return ResponseEntity.noContent().build();
 
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(theBook_.getId())
-				.toUri();
-
-		return ResponseEntity.created(location).build();
+		
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping
@@ -72,7 +76,7 @@ public class BookRestController {
 	}
 
 	@DeleteMapping("/{bookId}")
-	public String deleteEmployee(@PathVariable int bookId) {
+	public ResponseEntity<Void> deleteEmployee(@PathVariable int bookId) {
 
 		Book tempBook = bookesrvice.findById(bookId);
 
@@ -81,7 +85,6 @@ public class BookRestController {
 		}
 
 		bookesrvice.deleteById(bookId);
-
-		return "Deleted Book id - " + bookId;
+		return ResponseEntity.ok().build();
 	}
 }

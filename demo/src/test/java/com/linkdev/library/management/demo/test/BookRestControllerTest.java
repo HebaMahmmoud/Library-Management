@@ -37,7 +37,7 @@ class BookRestControllerTest {
 
 	@Test
 	public void getBookById() throws Exception {
-		System.out.println("---->> Find");
+		System.out.println("------------------------->> Test getBookById");
 		Book mockBook = new Book(3, "Book16", "Heba-Abdelwanees");
 		Mockito.when(bookService.findById(Mockito.anyInt())).thenReturn(mockBook);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/book/getById/3")
@@ -54,9 +54,10 @@ class BookRestControllerTest {
 
 	@Test
 	public void addBook() throws Exception {
-		System.out.println("---->> Create");
+		System.out.println("------------------------->> Test addBook");
 		Book mockBook = new Book(11, "Book33", "salma");
 		Mockito.when(bookService.save(Mockito.any(Book.class))).thenReturn(mockBook);
+
 		String bookJsonToPost = "{\"title\":\"Book33\",\"author\":\"salma\"}";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/book/add").accept(MediaType.APPLICATION_JSON)
 				.content(bookJsonToPost).contentType(MediaType.APPLICATION_JSON);
@@ -70,44 +71,45 @@ class BookRestControllerTest {
 		System.out.println("response :: LOCATION --- >> " + response.getHeader(HttpHeaders.LOCATION));
 
 		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+		assertEquals("http://localhost/book/add/11", response.getHeader(HttpHeaders.LOCATION));
 
 	}
 
 	@Test
 	public void updateBook() throws Exception {
 
-		System.out.println("---->> Update");
-		Book mockBook = new Book(7, "updatedBook", "heba");
+		System.out.println("------------------------->> Test updateBook");
+		Book mockBook = new Book(7, "updatedBook", "salma");
+		Mockito.when(bookService.findById(Mockito.anyInt())).thenReturn(mockBook);
 		Mockito.when(bookService.save(Mockito.any(Book.class))).thenReturn(mockBook);
-		String bookJsonToUpdate = "{\"title\":\"Book33\",\"author\":\"salma\"}";
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/book/update").accept(MediaType.APPLICATION_JSON)
+		String bookJsonToUpdate = "{\"title\":\"updatedBook\",\"author\":\"salma\"}";
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/book/update/7").accept(MediaType.APPLICATION_JSON)
 				.content(bookJsonToUpdate).contentType(MediaType.APPLICATION_JSON);
-
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
 		MockHttpServletResponse response = result.getResponse();
 
-		System.out.println("HttpStatus.Updated.value()--- >> " + HttpStatus.CREATED.value());
 		System.out.println("response.getStatus() --- >> " + response.getStatus());
-		System.out.println("response :: LOCATION --- >> " + response.getHeader(HttpHeaders.LOCATION));
 
-		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+
 	}
 
 	@Test
 	public void deleteBook() throws Exception {
-		System.out.println("---->> Delete");
-	     Mockito.when(bookService.deleteById(10)).thenReturn("Deleted Book id - 10");
+
+		System.out.println("------------------------->> Test deleteBook");
+		Book mockBook = new Book(10, "updatedBook", "salma");
+		Mockito.when(bookService.findById(Mockito.anyInt())).thenReturn(mockBook);
+		Mockito.when(bookService.deleteById(10)).thenReturn("Deleted Book id - 10");
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/book/10");
 
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 
 		MockHttpServletResponse response = result.getResponse();
-		System.out.println("Response -->> "+response.toString());
-		System.out.println(response.getStatus());
-		String deletedMessage = response.getContentAsString();
-		System.out.println("deletedMessage--- >> " + deletedMessage);
-		assertEquals(deletedMessage, "Deleted Book id - 10");
+
+		System.out.println("response.getStatus() -->> " + response.getStatus());
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
- 
+
 }
