@@ -40,7 +40,7 @@ public class BookRestController {
 	}
 
 	@PutMapping("/update/{bookId}")
-	public ResponseEntity<Void> updateEmployee(@PathVariable(value = "bookId") Integer bookId, @RequestBody Book theBook) {
+	public ResponseEntity<Void> updateBook(@PathVariable(value = "bookId") Integer bookId, @RequestBody Book theBook) {
 
 		Book tempBook = bookesrvice.findById(bookId);
 
@@ -64,7 +64,7 @@ public class BookRestController {
 	}
 
 	@GetMapping("/getById/{bookId}")
-	public Book getEmployee(@PathVariable int bookId) {
+	public Book getBook(@PathVariable int bookId) {
 
 		Book theBook = bookesrvice.findById(bookId);
 
@@ -76,7 +76,7 @@ public class BookRestController {
 	}
 
 	@DeleteMapping("/{bookId}")
-	public ResponseEntity<Void> deleteEmployee(@PathVariable int bookId) {
+	public ResponseEntity<Void> deleteBook(@PathVariable int bookId) {
 
 		Book tempBook = bookesrvice.findById(bookId);
 
